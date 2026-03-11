@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # Example: React workspace container
+  react-workspace:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./workspace:/workspace
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  # Backend server
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./server:/app/server
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - NODE_ENV=development
+    command: node server/index.js
+
+
+
+
