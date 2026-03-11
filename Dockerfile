@@ -1,5 +1,4 @@
-# Example Dockerfile for workspace containers
-# This is a template - each workspace would have its own container
+# Dockerfile for fullstack-playground (Next.js)
 
 FROM node:18-alpine
 
@@ -12,14 +11,17 @@ RUN apk add --no-cache \
     make \
     g++
 
-# Copy package files
+# Copy package files first (for better layer caching)
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Expose port
-EXPOSE 3000
+# Copy ALL source code into the container
+COPY . .
+
+# Expose the port used by next dev
+EXPOSE 5175
 
 # Default command
 CMD ["npm", "run", "dev"]
