@@ -55,7 +55,7 @@ app.post('/api/auth/register', async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = database.getUserByEmail(email);
+    const existingUser = await database.getUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({ success: false, error: 'User with this email already exists' });
     }
@@ -63,7 +63,7 @@ app.post('/api/auth/register', async (req, res) => {
     const userId = `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const hashedPassword = hashPassword(password);
     
-    const user = database.createUser({
+    const user = await database.createUser({
       id: userId,
       email,
       password: hashedPassword,
@@ -94,7 +94,7 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Email and password are required' });
     }
 
-    const user = database.getUserByEmail(email);
+    const user = await database.getUserByEmail(email);
     if (!user) {
       return res.status(401).json({ success: false, error: 'Invalid email or password' });
     }
@@ -120,7 +120,7 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // Get current user (verify session)
-app.get('/api/auth/me', (req, res) => {
+app.get('/api/auth/me', async (req, res) => {
   try {
     const sessionId = req.headers['x-session-id'];
     
@@ -133,7 +133,7 @@ app.get('/api/auth/me', (req, res) => {
       return res.status(401).json({ success: false, error: 'Invalid session' });
     }
 
-    const user = database.getUser(session.userId);
+    const user = await database.getUser(session.userId);
     if (!user) {
       return res.status(401).json({ success: false, error: 'User not found' });
     }
@@ -191,7 +191,7 @@ app.post('/api/projects/create', async (req, res) => {
     const workspacePath = path.join(__dirname, '../workspaces', projectId);
     
     // Create project in database
-    const project = database.createProject({
+    const project = await database.createProject({
       id: projectId,
       name,
       description,
@@ -226,7 +226,7 @@ app.get('/api/projects', async (req, res) => {
       }
     }
     
-    const projects = database.getAllProjects(userId);
+    const projects = await database.getAllProjects(userId);
     res.json({ success: true, projects });
   } catch (error) {
     console.error('Error getting projects:', error);
@@ -238,15 +238,15 @@ app.get('/api/projects', async (req, res) => {
 app.get('/api/projects/:projectId', async (req, res) => {
   try {
     const { projectId } = req.params;
-    const project = database.getProject(projectId);
+    const project = await database.getProject(projectId);
     
     if (!project) {
       return res.status(404).json({ success: false, error: 'Project not found' });
     }
 
     // Get files and dependencies
-    const files = database.getFilesByProject(projectId);
-    const dependencies = database.getDependencies(projectId);
+    const files = await database.getFilesByProject(projectId);
+    const dependencies = await database.getDependencies(projectId);
 
     res.json({ success: true, project, files, dependencies });
   } catch (error) {
@@ -259,7 +259,7 @@ app.get('/api/projects/:projectId', async (req, res) => {
 app.get('/api/projects/:projectId/files-structure', async (req, res) => {
   try {
     const { projectId } = req.params;
-    const project = database.getProject(projectId);
+    const project = await database.getProject(projectId);
     
     if (!project) {
       return res.status(404).json({ success: false, error: 'Project not found' });
@@ -306,7 +306,7 @@ app.put('/api/projects/:projectId', async (req, res) => {
       updates.is_completed = updates.is_completed ? 1 : 0;
     }
     
-    const project = database.updateProject(projectId, updates);
+    const project = await database.updateProject(projectId, updates);
     res.json({ success: true, project });
   } catch (error) {
     console.error('Error updating project:', error);
@@ -320,7 +320,7 @@ app.put('/api/projects/:projectId', async (req, res) => {
 app.get('/api/projects/:projectId/feedback', async (req, res) => {
   try {
     const { projectId } = req.params;
-    const feedback = database.getFeedbackByProject(projectId);
+    const feedback = await database.getFeedbackByProject(projectId);
     res.json({ success: true, feedback });
   } catch (error) {
     console.error('Error getting feedback:', error);
@@ -334,7 +334,7 @@ app.post('/api/projects/:projectId/feedback', async (req, res) => {
     const { projectId } = req.params;
     const { file_path, feedback_type, feedback_data } = req.body;
     
-    const feedback = database.createFeedback({
+    const feedback = await database.createFeedback({
       project_id: projectId,
       file_path,
       feedback_type,
@@ -354,7 +354,7 @@ app.post('/api/projects/:projectId/feedback', async (req, res) => {
 app.get('/api/projects/:projectId/progress', async (req, res) => {
   try {
     const { projectId } = req.params;
-    const tasks = database.getProgressTasksByProject(projectId);
+    const tasks = await database.getProgressTasksByProject(projectId);
     res.json({ success: true, tasks });
   } catch (error) {
     console.error('Error getting progress:', error);
@@ -368,7 +368,7 @@ app.post('/api/projects/:projectId/progress', async (req, res) => {
     const { projectId } = req.params;
     const { task_name, task_description, status } = req.body;
     
-    const task = database.createProgressTask({
+    const task = await database.createProgressTask({
       project_id: projectId,
       task_name,
       task_description,
@@ -388,7 +388,7 @@ app.put('/api/projects/:projectId/progress/:taskId', async (req, res) => {
     const { taskId } = req.params;
     const updates = req.body;
     
-    const task = database.updateProgressTask(parseInt(taskId), updates);
+    const task = await database.updateProgressTask(parseInt(taskId), updates);
     res.json({ success: true, task });
   } catch (error) {
     console.error('Error updating progress task:', error);
@@ -412,7 +412,7 @@ app.get('/api/projects/:projectId/agent-preferences', async (req, res) => {
       }
     }
     
-    const preferences = database.getAgentPreferencesByProject(projectId, userId);
+    const preferences = await database.getAgentPreferencesByProject(projectId, userId);
     res.json({ success: true, preferences });
   } catch (error) {
     console.error('Error getting agent preferences:', error);
@@ -435,7 +435,7 @@ app.post('/api/projects/:projectId/agent-preferences', async (req, res) => {
       }
     }
     
-    const preference = database.setAgentPreference({
+    const preference = await database.setAgentPreference({
       project_id: projectId,
       user_id: userId,
       agent_name,
@@ -457,7 +457,7 @@ app.delete('/api/projects/:projectId', async (req, res) => {
     const { projectId } = req.params;
     
     // Get project first to get workspace path
-    const project = database.getProject(projectId);
+    const project = await database.getProject(projectId);
     if (!project) {
       return res.status(404).json({ success: false, error: 'Project not found' });
     }
@@ -491,7 +491,7 @@ app.delete('/api/projects/:projectId', async (req, res) => {
     console.log(`[Delete Project] Deleted ${prefsDeleted.changes} agent preferences`);
     
     // 2. Delete the project itself
-    const deleteResult = database.deleteProject(projectId);
+    const deleteResult = await database.deleteProject(projectId);
     console.log(`[Delete Project] Deleted project from database`);
     
     // 3. Delete workspace directory (use project's workspace_path if available, otherwise default)
@@ -573,10 +573,10 @@ app.post('/api/projects/:projectId/files', async (req, res) => {
     }
 
     // Create in database
-    const file = database.createFile(projectId, file_path, content, is_directory);
+    const file = await database.createFile(projectId, file_path, content, is_directory);
 
     // Sync to file system
-    const project = database.getProject(projectId);
+    const project = await database.getProject(projectId);
     if (project && project.workspace_path) {
       const fullPath = path.join(project.workspace_path, file_path);
       
@@ -604,7 +604,7 @@ app.get('/api/projects/:projectId/files', async (req, res) => {
     
     // If file_path is specified, return that specific file
     if (file_path) {
-      const file = database.getFile(projectId, file_path);
+      const file = await database.getFile(projectId, file_path);
       if (file) {
         return res.json({ success: true, file });
       } else {
@@ -612,7 +612,7 @@ app.get('/api/projects/:projectId/files', async (req, res) => {
       }
     }
     
-    const files = database.getFilesByProject(projectId, directory);
+    const files = await database.getFilesByProject(projectId, directory);
     res.json({ success: true, files });
   } catch (error) {
     console.error('Error getting files:', error);
@@ -631,10 +631,10 @@ app.put('/api/projects/:projectId/files', async (req, res) => {
     }
 
     // Update in database
-    const file = database.updateFile(projectId, file_path, content);
+    const file = await database.updateFile(projectId, file_path, content);
 
     // Sync to file system
-    const project = database.getProject(projectId);
+    const project = await database.getProject(projectId);
     if (project && project.workspace_path) {
       const fullPath = path.join(project.workspace_path, file_path);
       await fs.writeFile(fullPath, content, 'utf8');
@@ -658,10 +658,10 @@ app.delete('/api/projects/:projectId/files', async (req, res) => {
     }
 
     // Delete from database
-    database.deleteFile(projectId, file_path);
+    await database.deleteFile(projectId, file_path);
 
     // Delete from file system
-    const project = database.getProject(projectId);
+    const project = await database.getProject(projectId);
     if (project && project.workspace_path) {
       const fullPath = path.join(project.workspace_path, file_path);
       await fs.rm(fullPath, { recursive: true, force: true }).catch(() => {});
@@ -686,7 +686,7 @@ app.post('/api/projects/:projectId/dependencies', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Package name is required' });
     }
 
-    const dependency = database.addDependency(projectId, package_name, version, type);
+    const dependency = await database.addDependency(projectId, package_name, version, type);
     
     // Sync package.json to file system
     await database.syncProjectToFileSystem(projectId);
@@ -702,7 +702,7 @@ app.post('/api/projects/:projectId/dependencies', async (req, res) => {
 app.get('/api/projects/:projectId/dependencies', async (req, res) => {
   try {
     const { projectId } = req.params;
-    const dependencies = database.getDependencies(projectId);
+    const dependencies = await database.getDependencies(projectId);
     res.json({ success: true, dependencies });
   } catch (error) {
     console.error('Error getting dependencies:', error);
@@ -720,7 +720,7 @@ app.delete('/api/projects/:projectId/dependencies', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Package name is required' });
     }
 
-    database.removeDependency(projectId, package_name, type);
+    await database.removeDependency(projectId, package_name, type);
     
     // Sync package.json to file system
     await database.syncProjectToFileSystem(projectId);
@@ -736,7 +736,7 @@ app.delete('/api/projects/:projectId/dependencies', async (req, res) => {
 app.post('/api/projects/:projectId/dependencies/install', async (req, res) => {
   try {
     const { projectId } = req.params;
-    const project = database.getProject(projectId);
+    const project = await database.getProject(projectId);
     
     if (!project || !project.workspace_path) {
       return res.status(404).json({ success: false, error: 'Project not found' });
@@ -789,7 +789,7 @@ app.post('/api/workspace/create', async (req, res) => {
     const { workspaceId, project, useDocker = false } = req.body;
     
     // Check if this is a database project
-    const dbProject = database.getProject(workspaceId);
+    const dbProject = await database.getProject(workspaceId);
     let workspacePath;
     
     if (dbProject) {
@@ -1079,7 +1079,7 @@ async function executeCommand(socket, command, workspaceId, currentDir = null, t
   if (cmd === 'cd') {
     const targetDir = args[0] || '';
     const workspacePath = workspaceManager.getWorkspacePath(workspaceId);
-    const dbProject = database.getProject(workspaceId);
+    const dbProject = await database.getProject(workspaceId);
     const basePath = dbProject?.workspace_path || workspacePath;
     
     if (!targetDir) {
@@ -1138,7 +1138,7 @@ async function executeCommand(socket, command, workspaceId, currentDir = null, t
 
   if (cmd === 'pwd') {
     const workspacePath = workspaceManager.getWorkspacePath(workspaceId);
-    const dbProject = database.getProject(workspaceId);
+    const dbProject = await database.getProject(workspaceId);
     const basePath = dbProject?.workspace_path || workspacePath;
     const fullPath = currentDir ? path.join(basePath, currentDir) : basePath;
     socket.emit('output', `${fullPath}\r\n`);
@@ -1178,7 +1178,7 @@ async function executeCommand(socket, command, workspaceId, currentDir = null, t
   try {
     // Get the correct working directory
     const workspacePath = workspaceManager.getWorkspacePath(workspaceId);
-    const dbProject = database.getProject(workspaceId);
+    const dbProject = await database.getProject(workspaceId);
     const basePath = dbProject?.workspace_path || workspacePath;
     const cwd = currentDir ? path.join(basePath, currentDir) : basePath;
     
@@ -1434,7 +1434,7 @@ async function executeCommand(socket, command, workspaceId, currentDir = null, t
           
           // Auto-sync file system to database for database projects
           // Check if workspaceId is a database project
-          const dbProject = database.getProject(workspaceId);
+          const dbProject = await database.getProject(workspaceId);
           if (dbProject) {
             // Sync file system changes to database
             try {
@@ -1469,7 +1469,7 @@ async function executeCommand(socket, command, workspaceId, currentDir = null, t
       }
       
       // Auto-sync for database projects
-      const dbProject = database.getProject(workspaceId);
+      const dbProject = await database.getProject(workspaceId);
       if (dbProject && result.success) {
         try {
           await database.syncFileSystemToDatabase(workspaceId);
@@ -1547,9 +1547,9 @@ io.on('connection', (socket) => {
     let currentDir = null; // Track current directory
     
     // Show proper PowerShell prompt on Windows, bash on Unix
-    const getPrompt = () => {
+    const getPrompt = async () => {
       const workspacePath = workspaceManager.getWorkspacePath(workspaceId);
-      const dbProject = database.getProject(workspaceId);
+      const dbProject = await database.getProject(workspaceId);
       const basePath = dbProject?.workspace_path || workspacePath;
       let displayPath = basePath;
       
@@ -1569,7 +1569,7 @@ io.on('connection', (socket) => {
     };
     
     // Only show prompt, no warning message
-    socket.emit('output', getPrompt());
+    getPrompt().then(prompt => socket.emit('output', prompt));
     
     // Track last Ctrl+C time for immediate force kill on rapid presses
     let lastCtrlCTime = 0;
