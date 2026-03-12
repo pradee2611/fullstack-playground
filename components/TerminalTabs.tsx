@@ -32,6 +32,7 @@ export default function TerminalTabs({ workspaceId }: TerminalTabsProps) {
     if (tabs.length === 0) {
       createNewTab();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const createNewTab = () => {
@@ -78,7 +79,7 @@ export default function TerminalTabs({ workspaceId }: TerminalTabsProps) {
         foreground: '#cccccc',
         cursor: '#aeafad',
         cursorAccent: '#1e1e1e',
-        selection: '#264f78',
+        selectionBackground: '#264f78',
         selectionForeground: '#ffffff',
         black: '#000000',
         red: '#cd3131',
@@ -106,14 +107,12 @@ export default function TerminalTabs({ workspaceId }: TerminalTabsProps) {
       cursorStyle: 'block',
       cursorWidth: 1,
       allowProposedApi: true,
-      enableBell: false,
       rightClickSelectsWord: true,
       wordSeparator: ' ()[]{}"\',;',
       convertEol: true,
       scrollback: 10000, // Allow 10000 lines of scrollback (unlimited scroll)
       tabStopWidth: 4,
       disableStdin: false, // Allow input
-      pasteWithRightClick: false, // Disable right-click paste to avoid conflicts
     });
 
     const fitAddon = new FitAddon();
@@ -235,12 +234,12 @@ export default function TerminalTabs({ workspaceId }: TerminalTabsProps) {
     };
     
     // Add paste listener with capture phase to intercept before xterm processes it
-    terminalContainer.addEventListener('paste', handlePaste, true);
+    terminalContainer.addEventListener('paste', handlePaste as EventListener, true);
     
     // Also add to xterm element itself as fallback
     const xtermElement = terminalContainer.querySelector('.xterm');
     if (xtermElement) {
-      xtermElement.addEventListener('paste', handlePaste, true);
+      xtermElement.addEventListener('paste', handlePaste as EventListener, true);
     }
 
     // Handle terminal input
@@ -296,10 +295,10 @@ export default function TerminalTabs({ workspaceId }: TerminalTabsProps) {
     // Cleanup on tab close
     return () => {
       window.removeEventListener('resize', handleResize);
-      terminalContainer.removeEventListener('paste', handlePaste);
+      terminalContainer.removeEventListener('paste', handlePaste as EventListener);
       const xtermElement = terminalContainer.querySelector('.xterm');
       if (xtermElement) {
-        xtermElement.removeEventListener('paste', handlePaste);
+        xtermElement.removeEventListener('paste', handlePaste as EventListener);
       }
       if (socket) {
         socket.disconnect();

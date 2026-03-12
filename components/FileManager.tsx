@@ -46,6 +46,7 @@ export default function FileManager({ projectId, onSelectFile, onFileChange }: F
       clearInterval(interval);
       socket.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, currentDirectory]);
 
   const loadFiles = async () => {

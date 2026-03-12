@@ -302,6 +302,7 @@ export default function ProjectSelector({ onSelectProject, user, sessionId, onLo
     } else {
       setLoadingProjects(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, sessionId]);
 
   const loadExistingProjects = async () => {

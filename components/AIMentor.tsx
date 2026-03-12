@@ -135,6 +135,7 @@ export default function AIMentor({ workspaceId, files, activeFile, project }: AI
         return () => clearTimeout(timeoutId);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeFile, files]);
 
   const autoExplainCode = async (filePath: string, fileContent: string) => {

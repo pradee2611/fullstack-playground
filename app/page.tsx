@@ -119,14 +119,14 @@ export default function Home() {
     // User clicked 'Go to Milestones' or start step
     // This should launch the Workspace
     if (activeModuleId) {
-      const module = SAMPLE_MODULES.find(m => m.id === activeModuleId);
+      const selectedModule = SAMPLE_MODULES.find(m => m.id === activeModuleId);
 
-      if (module) {
+      if (selectedModule) {
         const projectTemplate: ProjectTemplate = {
-          id: module.id,
-          name: module.title,
-          description: module.description,
-          language: module.techStack && module.techStack.length > 0 ? module.techStack[0].toLowerCase() : 'plaintext',
+          id: selectedModule.id,
+          name: selectedModule.title,
+          description: selectedModule.description,
+          language: selectedModule.techStack && selectedModule.techStack.length > 0 ? selectedModule.techStack[0].toLowerCase() : 'plaintext',
           files: {} // Should load initial boilerplate based on module
         };
         setSelectedProject(projectTemplate);

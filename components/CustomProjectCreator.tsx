@@ -150,7 +150,7 @@ export default function CustomProjectCreator({ onCreateProject, onCancel, sessio
               rows={5}
             />
             <small className="text-gray-500 text-xs mt-1 block">
-              Example: "Build a todo app where users can add, edit, delete, and mark tasks as complete"
+              Example: &quot;Build a todo app where users can add, edit, delete, and mark tasks as complete&quot;
             </small>
           </div>
 

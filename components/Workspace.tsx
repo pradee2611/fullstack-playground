@@ -60,6 +60,7 @@ export default function Workspace({ workspaceId, project, onCloseProject }: Work
       }
       startPreviewServer();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project.id, isCustomProject]);
 
   const triggerAgentsOnOpen = async (projectId: string) => {

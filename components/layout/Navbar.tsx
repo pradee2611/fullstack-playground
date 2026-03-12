@@ -52,6 +52,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 <div className="flex items-center gap-2 pl-2 border-l border-gray-700">
                     <div className="relative w-8 h-8 rounded-full border-2 border-green-500 flex items-center justify-center bg-gray-800">
                         {/* Simple Avatar Placeholder */}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                             src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
                             alt="User"

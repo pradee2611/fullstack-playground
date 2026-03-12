@@ -16,6 +16,7 @@ export default function VSCodeWeb({ workspaceId, onClose }: VSCodeWebProps) {
   useEffect(() => {
     // Start code-server for this workspace
     startCodeServer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workspaceId]);
 
   const startCodeServer = async () => {

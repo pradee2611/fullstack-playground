@@ -25,6 +25,7 @@ export default function DependencyManager({ projectId }: DependencyManagerProps)
 
   useEffect(() => {
     loadDependencies();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
 
   const loadDependencies = async () => {
@@ -155,7 +156,7 @@ export default function DependencyManager({ projectId }: DependencyManagerProps)
         <div className="text-center py-8 text-gray-500 text-sm">Loading...</div>
       ) : dependencies.length === 0 ? (
         <div className="text-center py-8 text-gray-500 text-sm">
-          No dependencies yet. Click "Add" to install packages.
+          No dependencies yet. Click &quot;Add&quot; to install packages.
         </div>
       ) : (
         <div className="flex flex-col gap-4">
