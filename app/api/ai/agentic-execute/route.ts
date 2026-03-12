@@ -49,10 +49,7 @@ export async function POST(request: NextRequest) {
 
     const result = await actionHandler(parameters);
 
-    return NextResponse.json({
-      success: true,
-      ...result,
-    });
+    return NextResponse.json(result);
   } catch (error: any) {
     console.error('Error executing agentic action:', error);
     return NextResponse.json(

@@ -27,7 +27,7 @@ export default function Terminal({ workspaceId }: TerminalProps) {
         background: '#1e1e1e',
         foreground: '#d4d4d4',
         cursor: '#aeafad',
-        selection: '#3e3e3e',
+        selectionBackground: '#3e3e3e',
         selectionForeground: '#ffffff',
       },
       fontSize: 14,
@@ -35,7 +35,6 @@ export default function Terminal({ workspaceId }: TerminalProps) {
       cursorBlink: true,
       cursorStyle: 'block',
       allowProposedApi: true,
-      enableBell: false,
       rightClickSelectsWord: true,
       wordSeparator: ' ()[]{}"\',;',
       scrollback: 10000, // Allow 10000 lines of scrollback (unlimited scroll)
