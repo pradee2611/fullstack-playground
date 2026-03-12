@@ -179,7 +179,7 @@ export default function AIMentor({ workspaceId, files, activeFile, project }: AI
     setIsReviewing(true);
     try {
       // Ensure we have latest files - sync from file system first
-      await fetch(`http://localhost:3001/api/projects/${project.id}/sync-from-fs`, {
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/sync-from-fs`, {
         method: 'POST',
       }).catch(() => {});
       
@@ -226,7 +226,7 @@ export default function AIMentor({ workspaceId, files, activeFile, project }: AI
     
     setIsValidating(true);
     try {
-      await fetch(`http://localhost:3001/api/projects/${project.id}/sync-from-fs`, {
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/sync-from-fs`, {
         method: 'POST',
       }).catch(() => {});
 
@@ -259,7 +259,7 @@ export default function AIMentor({ workspaceId, files, activeFile, project }: AI
         
         // Save validation feedback to database
         try {
-          await fetch(`http://localhost:3001/api/projects/${project.id}/feedback`, {
+          await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/feedback`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -378,14 +378,14 @@ export default function AIMentor({ workspaceId, files, activeFile, project }: AI
     setIsLoading(true);
     try {
       // Sync files first
-      await fetch(`http://localhost:3001/api/projects/${project.id}/sync-from-fs`, {
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/sync-from-fs`, {
         method: 'POST',
       }).catch(() => {});
 
       // Get latest files from database
       let latestFiles = files;
       try {
-        const filesResponse = await fetch(`http://localhost:3001/api/projects/${project.id}/files-structure`);
+        const filesResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/files-structure`);
         const filesData = await filesResponse.json();
         if (filesData.success && filesData.fileStructure) {
           latestFiles = filesData.fileStructure;
@@ -440,7 +440,7 @@ export default function AIMentor({ workspaceId, files, activeFile, project }: AI
       if (data.success && data.feedback) {
         // Save feedback to database
         try {
-          await fetch(`http://localhost:3001/api/projects/${project.id}/feedback`, {
+          await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/feedback`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -493,12 +493,12 @@ export default function AIMentor({ workspaceId, files, activeFile, project }: AI
     
     setIsLoading(true);
     try {
-      await fetch(`http://localhost:3001/api/projects/${project.id}/sync-from-fs`, {
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/sync-from-fs`, {
         method: 'POST',
       }).catch(() => {});
 
       // Get existing tasks
-      const tasksResponse = await fetch(`http://localhost:3001/api/projects/${project.id}/progress`);
+      const tasksResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/progress`);
       const tasksData = await tasksResponse.json();
       const existingTasks = tasksData.success ? tasksData.tasks : [];
 
@@ -512,14 +512,14 @@ export default function AIMentor({ workspaceId, files, activeFile, project }: AI
       ]);
 
       // Ensure we have latest files - sync from file system first
-      await fetch(`http://localhost:3001/api/projects/${project.id}/sync-from-fs`, {
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/sync-from-fs`, {
         method: 'POST',
       }).catch(() => {});
 
       // Get latest files structure from database
       let latestFiles = files;
       try {
-        const filesResponse = await fetch(`http://localhost:3001/api/projects/${project.id}/files-structure`);
+        const filesResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/files-structure`);
         const filesData = await filesResponse.json();
         if (filesData.success && filesData.files) {
           latestFiles = filesData.files;
@@ -550,7 +550,7 @@ export default function AIMentor({ workspaceId, files, activeFile, project }: AI
         // Save/update tasks in database
         for (const task of progress.tasks || []) {
           try {
-            await fetch(`http://localhost:3001/api/projects/${project.id}/progress`, {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/progress`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -691,7 +691,7 @@ export default function AIMentor({ workspaceId, files, activeFile, project }: AI
     
     setIsLoadingFeedback(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/projects/${project.id}/feedback`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/feedback`);
       const data = await response.json();
       if (data.success) {
         setFeedback(data.feedback || []);

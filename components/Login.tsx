@@ -26,7 +26,7 @@ export default function Login({ onLogin }: LoginProps) {
         body.name = name;
       }
 
-      const response = await fetch(`http://localhost:3001${endpoint}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),

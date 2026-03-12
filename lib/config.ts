@@ -12,11 +12,11 @@ export function getServerUrl(): string {
   // In Next.js, client-side env vars must be prefixed with NEXT_PUBLIC_
   if (typeof window !== 'undefined') {
     // Client-side: use NEXT_PUBLIC_SERVER_URL or fallback
-    return process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3001';
+    return process.env.NEXT_PUBLIC_SERVER_URL ;     
   }
   
   // Server-side: use SERVER_URL or fallback
-  return process.env.SERVER_URL || process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3001';
+  return process.env.SERVER_URL || process.env.NEXT_PUBLIC_SERVER_URL ;
 }
 
 /**

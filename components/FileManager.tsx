@@ -29,7 +29,7 @@ export default function FileManager({ projectId, onSelectFile, onFileChange }: F
     loadFiles();
     
     // Connect to socket for file change notifications
-    const socket = io('http://localhost:3001', {
+    const socket = io(`${process.env.NEXT_PUBLIC_SERVER_URL}`, {
       query: { workspaceId: projectId },
     });
     
@@ -53,7 +53,7 @@ export default function FileManager({ projectId, onSelectFile, onFileChange }: F
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:3001/api/projects/${projectId}/files?directory=${currentDirectory || ''}`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/files?directory=${currentDirectory || ''}`
       );
       const data = await response.json();
       if (data.success) {
@@ -75,7 +75,7 @@ export default function FileManager({ projectId, onSelectFile, onFileChange }: F
     try {
       const filePath = currentDirectory ? `${currentDirectory}/${createPath}` : createPath;
       
-      const response = await fetch(`http://localhost:3001/api/projects/${projectId}/files`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/files`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -105,7 +105,7 @@ export default function FileManager({ projectId, onSelectFile, onFileChange }: F
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/projects/${projectId}/files?file_path=${encodeURIComponent(filePath)}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/files?file_path=${encodeURIComponent(filePath)}`,
         { method: 'DELETE' }
       );
 
@@ -126,7 +126,7 @@ export default function FileManager({ projectId, onSelectFile, onFileChange }: F
     } else {
       // Load file content - get the file directly
       try {
-        const project = await fetch(`http://localhost:3001/api/projects/${projectId}`);
+        const project = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}`);
         const projectData = await project.json();
         if (projectData.success) {
           // Find the file in the files array
@@ -136,7 +136,7 @@ export default function FileManager({ projectId, onSelectFile, onFileChange }: F
           } else {
             // Try to read from file system as fallback
             const response = await fetch(
-              `http://localhost:3001/api/workspace/${projectId}/file?path=${encodeURIComponent(file.file_path)}`
+              `${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspace/${projectId}/file?path=${encodeURIComponent(file.file_path)}`
             );
             const data = await response.json();
             if (data.success) {
@@ -168,7 +168,7 @@ export default function FileManager({ projectId, onSelectFile, onFileChange }: F
             onClick={async () => {
               // Sync file system to database
               try {
-                await fetch(`http://localhost:3001/api/projects/${projectId}/sync-from-fs`, {
+                await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/sync-from-fs`, {
                   method: 'POST',
                 });
                 loadFiles();

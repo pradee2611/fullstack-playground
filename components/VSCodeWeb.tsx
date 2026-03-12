@@ -30,7 +30,7 @@ export default function VSCodeWeb({ workspaceId, onClose }: VSCodeWebProps) {
 
       // For development, you can use a local code-server instance
       // or integrate with a service like Gitpod's code-server
-      const response = await fetch(`http://localhost:3001/api/vscode/start`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/vscode/start`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ workspaceId }),

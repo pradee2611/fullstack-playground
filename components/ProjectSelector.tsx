@@ -308,7 +308,7 @@ export default function ProjectSelector({ onSelectProject, user, sessionId, onLo
   const loadExistingProjects = async () => {
     try {
       setLoadingProjects(true);
-      const response = await fetch('http://localhost:3001/api/projects', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects`, {
         headers: {
           'x-session-id': sessionId || '',
         },
@@ -346,7 +346,7 @@ export default function ProjectSelector({ onSelectProject, user, sessionId, onLo
     
     setDeleting(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/projects/${deleteConfirm.projectId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${deleteConfirm.projectId}`, {
         method: 'DELETE',
       });
       
@@ -381,7 +381,7 @@ export default function ProjectSelector({ onSelectProject, user, sessionId, onLo
 
     try {
       // Validate and get repo info
-      const infoResponse = await fetch(`http://localhost:3001/api/github/repo?url=${encodeURIComponent(repoUrl)}`);
+      const infoResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/github/repo?url=${encodeURIComponent(repoUrl)}`);
       const infoData = await infoResponse.json();
 
       if (!infoData.success) {
@@ -390,7 +390,7 @@ export default function ProjectSelector({ onSelectProject, user, sessionId, onLo
 
       // Create workspace and clone
       const workspaceId = `workspace-${Date.now()}`;
-      const cloneResponse = await fetch('http://localhost:3001/api/github/clone', {
+      const cloneResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/github/clone`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

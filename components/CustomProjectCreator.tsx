@@ -31,7 +31,7 @@ export default function CustomProjectCreator({ onCreateProject, onCancel, sessio
   const loadExistingProjects = async () => {
     try {
       setLoadingProjects(true);
-      const response = await fetch('http://localhost:3001/api/projects', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects`, {
         headers: {
           'x-session-id': sessionId || '',
         },
@@ -67,7 +67,7 @@ export default function CustomProjectCreator({ onCreateProject, onCancel, sessio
         headers['x-session-id'] = sessionId;
       }
 
-      const response = await fetch('http://localhost:3001/api/projects/create', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/create`, {
         method: 'POST',
         headers,
         body: JSON.stringify({

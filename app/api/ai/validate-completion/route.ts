@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     let fileStructure = files;
     if (!fileStructure && projectId) {
       try {
-        const filesResponse = await fetch(`http://localhost:3001/api/projects/${projectId}/files-structure`);
+        const filesResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/files-structure`);
         const filesData = await filesResponse.json();
         if (filesData.success) {
           fileStructure = filesData.files || filesData.fileStructure;

@@ -39,7 +39,7 @@ export default function Home() {
 
     if (storedSessionId && storedUser) {
       // Verify session with server
-      fetch('http://localhost:3001/api/auth/me', {
+      fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/me`, {
         headers: {
           'x-session-id': storedSessionId,
         },
@@ -86,7 +86,7 @@ export default function Home() {
 
   const handleLogout = () => {
     if (sessionId) {
-      fetch('http://localhost:3001/api/auth/logout', {
+      fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/logout`, {
         method: 'POST',
         headers: {
           'x-session-id': sessionId,

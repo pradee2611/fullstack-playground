@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     // Step 1: Sync files from file system
     try {
       console.log(`[CrewAI Agent Flow] Step 1: Syncing files from file system...`);
-      await fetch(`http://localhost:3001/api/projects/${projectId}/sync-from-fs`, {
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/sync-from-fs`, {
         method: 'POST',
       });
       console.log(`[CrewAI Agent Flow] Step 1: Files synced successfully`);
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     let files = null;
     try {
       console.log(`[CrewAI Agent Flow] Step 2: Fetching files from database...`);
-      const filesResponse = await fetch(`http://localhost:3001/api/projects/${projectId}/files-structure`);
+      const filesResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/files-structure`);
       const filesData = await filesResponse.json();
       
       if (filesData.success) {

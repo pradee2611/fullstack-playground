@@ -17,7 +17,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:3000', 'http://localhost:5175', 'http://localhost:3001'],
+    origin: ['http://localhost:3000', 'http://localhost:5175', `${process.env.NEXT_PUBLIC_SERVER_URL}`],
     methods: ['GET', 'POST'],
   },
 });
@@ -1022,7 +1022,7 @@ app.post('/api/preview/start', async (req, res) => {
       // Static HTML project - serve directly
       res.json({
         success: true,
-        url: `http://localhost:3001/workspace/${workspaceId}/index.html`,
+        url: `${process.env.NEXT_PUBLIC_SERVER_URL}/workspace/${workspaceId}/index.html`,
       });
     }
   } catch (error) {

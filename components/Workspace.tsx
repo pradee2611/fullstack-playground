@@ -43,7 +43,7 @@ export default function Workspace({ workspaceId, project, onCloseProject }: Work
       // Set up periodic auto-sync from file system to database (every 30 seconds)
       const syncInterval = setInterval(async () => {
         try {
-          await fetch(`http://localhost:3001/api/projects/${project.id}/sync-from-fs`, {
+          await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/sync-from-fs`, {
             method: 'POST',
           });
         } catch (error) {
@@ -69,7 +69,7 @@ export default function Workspace({ workspaceId, project, onCloseProject }: Work
       const sessionId = localStorage.getItem('sessionId');
       if (!sessionId) return;
 
-      const prefsResponse = await fetch(`http://localhost:3001/api/projects/${projectId}/agent-preferences`, {
+      const prefsResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/agent-preferences`, {
         headers: { 'x-session-id': sessionId },
       });
       const prefsData = await prefsResponse.json();
@@ -128,7 +128,7 @@ export default function Workspace({ workspaceId, project, onCloseProject }: Work
   const loadProjectDetails = async () => {
     if (!project.id) return;
     try {
-      const response = await fetch(`http://localhost:3001/api/projects/${project.id}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}`);
       const data = await response.json();
       if (data.success && data.project) {
         setProjectDetails(data.project);
@@ -154,20 +154,20 @@ export default function Workspace({ workspaceId, project, onCloseProject }: Work
     try {
       // For custom projects, sync database to file system first
       if (isCustomProject && project.id) {
-        await fetch(`http://localhost:3001/api/projects/${project.id}/sync`, {
+        await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/sync`, {
           method: 'POST',
         });
       }
 
       // First, initialize workspace on server
-      await fetch('http://localhost:3001/api/workspace/create', {
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspace/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ workspaceId: effectiveWorkspaceId, project }),
       });
 
       // Then start preview server
-      const response = await fetch('http://localhost:3001/api/preview/start', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/preview/start`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ workspaceId: effectiveWorkspaceId, project }),
@@ -184,14 +184,14 @@ export default function Workspace({ workspaceId, project, onCloseProject }: Work
   const loadProjectFiles = async () => {
     try {
       // First, sync file system to database to ensure we have latest files
-      await fetch(`http://localhost:3001/api/projects/${project.id}/sync-from-fs`, {
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/sync-from-fs`, {
         method: 'POST',
       }).catch(() => {
         // Ignore errors - file system might not exist yet
       });
 
       // Then load files structure from database
-      const response = await fetch(`http://localhost:3001/api/projects/${project.id}/files-structure`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/files-structure`);
       const data = await response.json();
       if (data.success && data.files) {
         setFiles(data.files);
@@ -203,7 +203,7 @@ export default function Workspace({ workspaceId, project, onCloseProject }: Work
         }
       } else {
         // Fallback: try old endpoint
-        const oldResponse = await fetch(`http://localhost:3001/api/projects/${project.id}`);
+        const oldResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}`);
         const oldData = await oldResponse.json();
         if (oldData.success && oldData.files) {
           // Convert files array to nested FileStructure
@@ -246,7 +246,7 @@ export default function Workspace({ workspaceId, project, onCloseProject }: Work
     // For custom projects, save to database
     if (isCustomProject && project.id) {
       try {
-        await fetch(`http://localhost:3001/api/projects/${project.id}/files`, {
+        await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${project.id}/files`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ file_path: path, content }),
@@ -282,7 +282,7 @@ export default function Workspace({ workspaceId, project, onCloseProject }: Work
     // Save to server file system (for template projects)
     if (!isCustomProject) {
       try {
-        await fetch(`http://localhost:3001/api/workspace/${effectiveWorkspaceId}/file`, {
+        await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspace/${effectiveWorkspaceId}/file`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ path, content }),

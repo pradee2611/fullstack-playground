@@ -31,7 +31,7 @@ export default function DependencyManager({ projectId }: DependencyManagerProps)
   const loadDependencies = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:3001/api/projects/${projectId}/dependencies`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/dependencies`);
       const data = await response.json();
       if (data.success) {
         setDependencies(data.dependencies || []);
@@ -51,7 +51,7 @@ export default function DependencyManager({ projectId }: DependencyManagerProps)
 
     try {
       setError(null);
-      const response = await fetch(`http://localhost:3001/api/projects/${projectId}/dependencies`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/dependencies`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -82,7 +82,7 @@ export default function DependencyManager({ projectId }: DependencyManagerProps)
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/projects/${projectId}/dependencies?package_name=${encodeURIComponent(packageName)}&type=${type}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/dependencies?package_name=${encodeURIComponent(packageName)}&type=${type}`,
         { method: 'DELETE' }
       );
 
@@ -103,7 +103,7 @@ export default function DependencyManager({ projectId }: DependencyManagerProps)
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/projects/${projectId}/dependencies/install`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/dependencies/install`,
         { method: 'POST' }
       );
 

@@ -50,7 +50,7 @@ function DashboardContent() {
 
   const loadProjects = async (sessionId: string) => {
     try {
-      const response = await fetch('http://localhost:3001/api/projects', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects`, {
         headers: {
           'x-session-id': sessionId,
         },
@@ -68,7 +68,7 @@ function DashboardContent() {
 
   const loadFeedback = async (projectId: string) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/projects/${projectId}/feedback`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/feedback`);
       const data = await response.json();
       if (data.success) {
         setFeedback(data.feedback || []);

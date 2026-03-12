@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     // Step 1: Sync files if projectId provided
     if (projectId) {
       try {
-        await fetch(`http://localhost:3001/api/projects/${projectId}/sync-from-fs`, {
+        await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/sync-from-fs`, {
           method: 'POST',
         }).catch(() => {});
       } catch (e) {
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
       processedFiles = files;
     } else if (!fileStructure && projectId) {
       try {
-        const filesResponse = await fetch(`http://localhost:3001/api/projects/${projectId}/files-structure`);
+        const filesResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/files-structure`);
         const filesData = await filesResponse.json();
         if (filesData.success) {
           // Handle both response formats (files or fileStructure)
@@ -248,7 +248,7 @@ export async function POST(request: NextRequest) {
       let existingTasks: any[] = [];
       if (projectId) {
         try {
-          const tasksResponse = await fetch(`http://localhost:3001/api/projects/${projectId}/progress`);
+          const tasksResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/projects/${projectId}/progress`);
           const tasksData = await tasksResponse.json();
           existingTasks = tasksData.success ? tasksData.tasks : [];
         } catch (e) {

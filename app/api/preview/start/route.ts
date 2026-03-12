@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
     const { workspaceId, project } = await request.json();
     
     // Forward to backend server
-    const response = await fetch('http://localhost:3001/api/preview/start', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/preview/start`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ workspaceId, project }),
